@@ -6,36 +6,62 @@ import (
 	"testing"
 )
 
-func TestLoad(t *testing.T) {
+var config *Config
+
+func loadConfig(s string, t *testing.T) *Config {
 	config, err := Load("test.cfg")
-	defer config.Free()
 
 	if err != nil {
 		fmt.Fprintf(os.Stderr, err.Error())
 		t.FailNow()
+	}
+
+	return config
+}
+
+func TestLoad(t *testing.T) {
+	config := loadConfig("test.cfg", t)
+	defer config.Free()
+}
+
+func assertType(t *testing.T, setting *ConfigSetting, expected int) {
+	if setting.Type() != expected {
+		t.Errorf("Types %d and %d don't match", setting.Type(), expected)
+	}
+}
+
+func assertBool(t *testing.T, setting *ConfigSetting, expected bool) {
+	if v := setting.Bool(); v != expected {
+		t.Errorf("Bool value mismatch, %v != %v", v, expected)
 	}
 }
 
 func TestLookupString(t *testing.T) {
-	config, err := Load("test.cfg")
+	config := loadConfig("test.cfg", t)
 	defer config.Free()
 
-	if err != nil {
-		fmt.Fprintf(os.Stderr, err.Error())
-		t.FailNow()
-	}
-
 	setting := config.Lookup("something")
-	if setting.Type() != TYPE_STRING {
-		t.FailNow()
-	}
+	assertType(t, setting, TYPE_STRING)
 
 	if setting.Name() != "something" {
-		t.FailNow()
+		t.Errorf("Name mismatch, %s != %s", setting.Name(), "something")
 	}
 
 	if setting.String() != "one" {
-		fmt.Println(setting.String())
-		t.FailNow()
+		t.Errorf("Value mismatch, %s != %s", setting.String(), "one")
 	}
+}
+
+func TestLookupBool(t *testing.T) {
+	config := loadConfig("test.cfg", t)
+	defer config.Free()
+
+	setting := config.Lookup("bool")
+	assertType(t, setting, TYPE_BOOL)
+
+	assertBool(t, setting, false)
+
+	setting = config.Lookup("truthiness")
+	assertType(t, setting, TYPE_BOOL)
+	assertBool(t, setting, true)
 }
