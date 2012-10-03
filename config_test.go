@@ -36,6 +36,12 @@ func assertBool(t *testing.T, setting *ConfigSetting, expected bool) {
 	}
 }
 
+func assertString(t *testing.T, got string, expected string) {
+	if  got != expected {
+		t.Errorf("String value mismatch, %v != %v", got, expected)
+	}
+}
+
 func TestLookupString(t *testing.T) {
 	config := loadConfig("test.cfg", t)
 	defer config.Free()
@@ -43,13 +49,8 @@ func TestLookupString(t *testing.T) {
 	setting := config.Lookup("something")
 	assertType(t, setting, TYPE_STRING)
 
-	if setting.Name() != "something" {
-		t.Errorf("Name mismatch, %s != %s", setting.Name(), "something")
-	}
-
-	if setting.String() != "one" {
-		t.Errorf("Value mismatch, %s != %s", setting.String(), "one")
-	}
+	assertString(t, setting.Name(), "something")
+	assertString(t, setting.String(), "one")
 }
 
 func TestLookupBool(t *testing.T) {
