@@ -27,6 +27,10 @@ func (cs *ConfigSetting) Type() int {
 	return int(cs.setting._type)
 }
 
+func (cs *ConfigSetting) Length() int {
+	return int(C.config_setting_length(cs.setting))
+}
+
 func (cs *ConfigSetting) String() string {
 	cstr := C.config_setting_get_string(cs.setting)
 	return C.GoString(cstr)

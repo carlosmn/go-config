@@ -1,8 +1,6 @@
 package config
 
 import (
-	"os"
-	"fmt"
 	"testing"
 )
 
@@ -12,16 +10,11 @@ func loadConfig(s string, t *testing.T) *Config {
 	config, err := Load("test.cfg")
 
 	if err != nil {
-		fmt.Fprintf(os.Stderr, err.Error())
+		t.Error(err)
 		t.FailNow()
 	}
 
 	return config
-}
-
-func TestLoad(t *testing.T) {
-	config := loadConfig("test.cfg", t)
-	defer config.Free()
 }
 
 func assertType(t *testing.T, setting *ConfigSetting, expected int) {
@@ -44,7 +37,6 @@ func assertString(t *testing.T, got string, expected string) {
 
 func TestLookupString(t *testing.T) {
 	config := loadConfig("test.cfg", t)
-	defer config.Free()
 
 	setting := config.Lookup("something")
 	assertType(t, setting, TYPE_STRING)
@@ -55,7 +47,6 @@ func TestLookupString(t *testing.T) {
 
 func TestLookupBool(t *testing.T) {
 	config := loadConfig("test.cfg", t)
-	defer config.Free()
 
 	setting := config.Lookup("bool")
 	assertType(t, setting, TYPE_BOOL)
