@@ -8,7 +8,7 @@ import (
 var config *Config
 
 func loadConfig(s string, t *testing.T) *Config {
-	config, err := Load("test.cfg")
+	config, err := Load(s)
 
 	if err != nil {
 		t.Error(err)
@@ -72,4 +72,18 @@ func TestList(t *testing.T) {
 	assertType(t, elems[0], TYPE_INT)
 	assertType(t, elems[1], TYPE_STRING)
 	assertType(t, elems[2], TYPE_BOOL)
+}
+
+func TestGroup(t *testing.T) {
+	config := loadConfig("noloses.cfg", t)
+
+	setting := config.Lookup("ifaces")
+	assertType(t, setting, TYPE_GROUP)
+
+	elems := setting.Slice()
+	assertType(t, elems[0], TYPE_INT)
+	assertType(t, elems[1], TYPE_ARRAY)
+
+	setting = config.Lookup("ifaces.count")
+	assertType(t, setting, TYPE_INT)
 }
