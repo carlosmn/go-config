@@ -30,6 +30,11 @@ const (
 	TRUE = 1
 )
 
+const (
+	FORMAT_DEFAULT = C.CONFIG_FORMAT_DEFAULT
+	FORMAT_HEX = C.CONFIG_FORMAT_HEX
+)
+
 func NewConfig() *Config {
 	c := new(Config)
 	C.config_init(&c.config)
@@ -72,4 +77,12 @@ func (c *Config) Lookup(key string) *ConfigSetting {
 	setting := C.config_lookup(&c.config, ckey)
 
 	return &ConfigSetting{setting}
+}
+
+func (c *Config) Format() int {
+	return int(c.config.default_format)
+}
+
+func (c *Config) SetFormat(format int) {
+	c.config.default_format = C.short(format)
 }
