@@ -45,6 +45,16 @@ func (cs *ConfigSetting) Bool() bool {
 	return true
 }
 
+func (cs *ConfigSetting) Int() int {
+	ret := C.config_setting_get_int(cs.setting)
+	return int(ret)
+}
+
+func (cs *ConfigSetting) Float() float32 {
+	ret := C.config_setting_get_float(cs.setting)
+	return float32(ret)
+}
+
 func (cs *ConfigSetting) Slice() []*ConfigSetting {
 	l := cs.Length()
 	list := make([]*ConfigSetting, l)
