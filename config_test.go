@@ -2,6 +2,7 @@ package config
 
 import (
 	"testing"
+	"runtime"
 )
 
 var config *Config
@@ -19,19 +20,22 @@ func loadConfig(s string, t *testing.T) *Config {
 
 func assertType(t *testing.T, setting *ConfigSetting, expected int) {
 	if setting.Type() != expected {
-		t.Errorf("Types %d and %d don't match", setting.Type(), expected)
+		_, file, line, _ := runtime.Caller(1)
+		t.Errorf("%s:%d -- Types %d and %d don't match", file, line, setting.Type(), expected)
 	}
 }
 
 func assertBool(t *testing.T, setting *ConfigSetting, expected bool) {
 	if v := setting.Bool(); v != expected {
-		t.Errorf("Bool value mismatch, %v != %v", v, expected)
+		_, file, line, _ := runtime.Caller(1)
+		t.Errorf("%s:%d -- Bool value mismatch, %v != %v", file, line, v, expected)
 	}
 }
 
 func assertString(t *testing.T, got string, expected string) {
 	if  got != expected {
-		t.Errorf("String value mismatch, %v != %v", got, expected)
+		_, file, line, _ := runtime.Caller(1)
+		t.Errorf("%s:%d -- String value mismatch, %v != %v", file, line, got, expected)
 	}
 }
 
