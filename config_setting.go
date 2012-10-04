@@ -45,6 +45,18 @@ func (cs *ConfigSetting) Bool() bool {
 	return true
 }
 
+func (cs *ConfigSetting) Slice() []*ConfigSetting {
+	l := cs.Length()
+	list := make([]*ConfigSetting, l)
+
+	for i := 0; i < l; i++ {
+		setting := C.config_setting_get_elem(cs.setting, C.uint(i))
+		list[i] = &ConfigSetting{setting}
+	}
+
+	return list
+}
+
 func (cs *ConfigSetting) Name() string {
 	return C.GoString(cs.setting.name)
 }

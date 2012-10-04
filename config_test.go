@@ -57,3 +57,15 @@ func TestLookupBool(t *testing.T) {
 	assertType(t, setting, TYPE_BOOL)
 	assertBool(t, setting, true)
 }
+
+func TestList(t *testing.T) {
+	config := loadConfig("test.cfg", t)
+
+	setting := config.Lookup("list")
+	assertType(t, setting, TYPE_LIST)
+
+	elems := setting.Slice()
+	assertType(t, elems[0], TYPE_INT)
+	assertType(t, elems[1], TYPE_STRING)
+	assertType(t, elems[2], TYPE_BOOL)
+}
